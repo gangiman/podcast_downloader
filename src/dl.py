@@ -63,12 +63,16 @@ def get_file_link(post):
 def check_for_new_posts(_state):
     feeds = _state["feeds"]
     last_check_time = datetime.fromtimestamp(_state["last_download"])
-    # last_check_time = datetime(year=2014, month=2, day=23)
+    #last_check_time = datetime(year=2014, month=3, day=26, hour=8, minute=20)
     predicate = is_post_later_than_moment(last_check_time)
     posts = []
     for podcast, params in feeds.items():
         feed = feedparser.parse(params['url'])
-        new_posts = list(takewhile(predicate, feed.entries))
+        if "skip_promo" in params and params["skip_promo"]:
+            entries = feed.entries[1:]
+        else:
+            entries = feed.entries
+        new_posts = list(takewhile(predicate, entries))
         print("{} podcast has {} posts later than {}".format(podcast, len(new_posts), last_check_time))
         for post in new_posts:
             link = get_file_link(post)

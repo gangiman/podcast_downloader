@@ -1,20 +1,27 @@
 {
   "feeds": {
+    "nerdist": {
+      "url": "http://nerdist.libsyn.com/rss"
+    }, 
+    "sick_and_wrong": {
+      "url": "http://www.sickandwrongpodcast.com/sickandwrong.xml", 
+      "skip_promo": true
+    }, 
     "startalk": {
       "url": "http://feeds.soundcloud.com/users/soundcloud:users:38128127/sounds.rss"
-    }, 
-    "smodcast": {
-      "url": "http://smodcast.com/channels/smodcast/feed/"
-    }, 
-    "wtf": {
-      "url": "http://www.wtfpod.com/podcast/rss"
     }, 
     "the-bugle": {
       "url": "http://feeds.feedburner.com/thebuglefeed?format=xml"
     }, 
-    "nerdist": {
-      "url": "http://nerdist.libsyn.com/rss"
+    "smodcast": {
+      "url": "http://smodcast.com/channels/smodcast/feed/"
+    }, 
+    "freakonomics": {
+      "url": "http://feeds.feedburner.com/freakonomicsradio"
+    }, 
+    "wtf": {
+      "url": "http://www.wtfpod.com/podcast/rss"
     }
   }, 
-  "last_download": 1395500470
+  "last_download": 1396047093
 }

@@ -63,7 +63,7 @@ def get_file_link(post):
 def check_for_new_posts(_state):
     feeds = _state["feeds"]
     last_check_time = datetime.fromtimestamp(_state["last_download"])
-    #last_check_time = datetime(year=2014, month=3, day=26, hour=8, minute=20)
+    #last_check_time = datetime(year=2014, month=5, day=14, hour=20, minute=00)
     predicate = is_post_later_than_moment(last_check_time)
     posts = []
     for podcast, params in feeds.items():
@@ -86,12 +86,16 @@ def check_for_new_posts(_state):
     return posts
 
 if __name__ == '__main__':
-    with open("state.json", "r") as fh:
+    state_path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        "state.json" 
+    )
+    with open(state_path, "r") as fh:
         state = json.loads(fh.read())
     all_posts = check_for_new_posts(state)
     start_time = int(datetime.now().timestamp())
     if confirm(prompt_str="Download new podcasts?", allow_empty=True, default=False):
-        dl_folder_name = "podcasts"
+        dl_folder_name = "/media/alex/VERBATIM HD/shows/podcasts"
         if not os.path.isdir(dl_folder_name):
             os.mkdir(dl_folder_name)
         os.chdir(dl_folder_name)
@@ -111,7 +115,7 @@ if __name__ == '__main__':
                     download_link.split("/")[-1],
                     clean_filename(title) + ".mp3")
         print("Updating state.json")
-        with open("../state.json", "w") as fh:
+        with open(state_path, "w") as fh:
             state["last_download"] = start_time 
             fh.write(json.dumps(state, indent=2))
         print("Download completed!")

@@ -9,7 +9,9 @@ import string
 import os
 from subprocess import call
 
-valid_chars = "-_.() {}{}".format(string.ascii_letters, string.digits)
+DL_FOLDER_NAME = "/media/alex/VERBATIM HD/shows/podcasts"
+
+VALID_CHARS = "-_.() {}{}".format(string.ascii_letters, string.digits)
 
 
 def confirm(prompt_str="Confirm", allow_empty=False, default=False):
@@ -33,7 +35,7 @@ def confirm(prompt_str="Confirm", allow_empty=False, default=False):
 
 
 def clean_filename(filename):
-    clean_chars = (c for c in filename if c in valid_chars)
+    clean_chars = (c for c in filename if c in VALID_CHARS)
     ws_to_us = ("_" if c == " " else c for c in clean_chars)
     return "".join(ws_to_us)
 
@@ -73,11 +75,11 @@ def check_for_new_posts(_state):
         else:
             entries = feed.entries
         new_posts = list(takewhile(predicate, entries))
-        print("{} podcast has {} posts later than {}".format(podcast, len(new_posts), last_check_time))
+        print("\n{} podcast has {} posts later than {}".format(podcast, len(new_posts), last_check_time))
         for post in new_posts:
             link = get_file_link(post)
             pub_time = post.published if "published" in post else post.updated
-            print("\tpost with title '{}' published at {}, link: {}".format(
+            print("\n\ttitle: '{}'\n\tpublished: {}\n\tlink: {}".format(
                 post.title,
                 pub_time,
                 link
@@ -85,37 +87,49 @@ def check_for_new_posts(_state):
             posts.append((post.title, pub_time, link))
     return posts
 
-if __name__ == '__main__':
+
+def posts_to_wget_commands(posts):
+    for title, _, download_link in posts:
+        if download_link.endswith(".mp3"):
+            filename = download_link.split("/")[-1]
+        else:
+            filename = clean_filename(title) + ".mp3"
+        yield "wget '{0}' -O '{1}'".format(download_link, filename)
+
+
+def download_podcasts(posts):
+    if not os.path.isdir(DL_FOLDER_NAME):
+        os.mkdir(DL_FOLDER_NAME)
+    os.chdir(DL_FOLDER_NAME)
+    get_podcast_shell_script_filename = "get_podcasts.sh"
+    with open(get_podcast_shell_script_filename, "w+") as fd:
+        fd.write('\n'.join(posts_to_wget_commands(posts)))
+    return_code = call(["bash", get_podcast_shell_script_filename])
+    os.remove(get_podcast_shell_script_filename)
+    return return_code
+
+
+def main():
     state_path = os.path.join(
         os.path.abspath(os.path.dirname(__file__)),
-        "state.json" 
+        "state.json"
     )
     with open(state_path, "r") as fh:
         state = json.loads(fh.read())
     all_posts = check_for_new_posts(state)
     start_time = int(datetime.now().timestamp())
     if confirm(prompt_str="Download new podcasts?", allow_empty=True, default=False):
-        dl_folder_name = "/media/alex/VERBATIM HD/shows/podcasts"
-        if not os.path.isdir(dl_folder_name):
-            os.mkdir(dl_folder_name)
-        os.chdir(dl_folder_name)
-        full_links = [post[2] for post in all_posts]
-        print("Starting downloading %d podcasts" % len(full_links))
-        with open("links.tmp", "w+") as fd:
-            fd.write('\n'.join(full_links))
-        return_code = call(["wget", "-i", "links.tmp"])
-        os.remove("links.tmp")
+        return_code = download_podcasts(all_posts)
         print(
-            "wget finished downloading {0} pictures with exit code {1}"
-            .format(len(full_links), return_code)
+            "wget finished downloading with exit code {0}"
+            .format(return_code)
         )
-        for title, date, download_link in all_posts:
-            if ".mp3?" in download_link:
-                os.rename(
-                    download_link.split("/")[-1],
-                    clean_filename(title) + ".mp3")
-        print("Updating state.json")
-        with open(state_path, "w") as fh:
-            state["last_download"] = start_time 
-            fh.write(json.dumps(state, indent=2))
-        print("Download completed!")
+        if int(return_code) == 0:
+            print("Updating state.json")
+            with open(state_path, "w") as fh:
+                state["last_download"] = start_time
+                fh.write(json.dumps(state, indent=2))
+            print("Download completed!")
+
+if __name__ == '__main__':
+    main()

@@ -9,7 +9,7 @@ import string
 import os
 from subprocess import call
 
-DL_FOLDER_NAME = "/media/alex/VERBATIM HD/shows/podcasts"
+DL_FOLDER_NAME = "~/Downloads/"
 
 VALID_CHARS = "-_.() {}{}".format(string.ascii_letters, string.digits)
 

@@ -9,7 +9,22 @@ import string
 import os
 from subprocess import call
 
-DL_FOLDER_NAME = "/media/alex/VERBATIM HD/shows/podcasts"
+
+def get_config():
+    state_path = os.path.join(
+        os.path.abspath(os.path.dirname(__file__)),
+        "config.json"
+    )
+    with open(state_path, "r") as fh:
+        config = json.loads(fh.read())
+    return config
+
+
+config = get_config()
+
+feeds = config["feeds"]
+
+DL_FOLDER_NAME = config["download folder"]
 
 VALID_CHARS = "-_.() {}{}".format(string.ascii_letters, string.digits)
 
@@ -63,7 +78,6 @@ def get_file_link(post):
 
 
 def check_for_new_posts(_state):
-    feeds = _state["feeds"]
     last_check_time = datetime.fromtimestamp(_state["last_download"])
     #last_check_time = datetime(year=2014, month=5, day=14, hour=20, minute=00)
     predicate = is_post_later_than_moment(last_check_time)

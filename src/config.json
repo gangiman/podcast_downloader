@@ -1,0 +1,42 @@
+{
+    "feeds": {
+        "the-bugle": {
+          "url": "http://feeds.feedburner.com/thebuglefeed?format=xml"
+        },
+        "startalk": {
+          "url": "http://feeds.soundcloud.com/users/soundcloud:users:38128127/sounds.rss"
+        },
+        "nerdist": {
+          "url": "http://nerdist.libsyn.com/rss"
+        },
+        "radiolab": {
+          "url": "http://feeds.wnyc.org/radiolab"
+        },
+        "No such thing as a fish": {
+          "url": "http://feeds.soundcloud.com/users/soundcloud:users:11400353/sounds.rss"
+        },
+        "sick_and_wrong": {
+          "skip_promo": true,
+          "url": "http://www.sickandwrongpodcast.com/sickandwrong.xml"
+        },
+        "The Tim Ferriss show": {
+          "url": "http://feeds.feedburner.com/thetimferrissshow"
+        },
+        "wtf": {
+          "url": "http://www.wtfpod.com/podcast/rss"
+        },
+        "the loopcast": {
+          "url": "http://www.theloopcast.com/feed/"
+        },
+        "The life scientific": {
+          "url": "http://downloads.bbc.co.uk/podcasts/radio4/tls/rss.xml"
+        },
+        "freakonomics": {
+          "url": "http://feeds.feedburner.com/freakonomicsradio"
+        },
+        "smodcast": {
+          "url": "http://smodcast.com/channels/smodcast/feed/"
+        }
+    },
+    "download folder": "/media/alex/VERBATIM HD/shows/podcasts"
+}
